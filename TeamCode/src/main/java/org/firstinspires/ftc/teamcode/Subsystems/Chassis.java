@@ -47,10 +47,10 @@ public class Chassis extends SubsystemBase {
         right_DriveTrain.setPower(linearVelocity + angularVelocity);
 
     }
-    public double leftDistance(){
+    public double leftDistance() {
       return ((left_DriveTrain.getCurrentPosition() / TICKS_PER_METER) * TRACK_WIDTH * Math.PI) / REDUCTION;
     }
-    public double rightDistance(){
+    public double rightDistance() {
         return ((right_DriveTrain.getCurrentPosition() / TICKS_PER_METER) * TRACK_WIDTH * Math.PI) / REDUCTION;
     }
 
