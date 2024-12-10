@@ -14,8 +14,8 @@ import org.firstinspires.ftc.robotcore.external.navigation.YawPitchRollAngles;
 
 
 public class Chassis extends SubsystemBase {
-    private IOverDcMotor left_DriveTrain;
-    private IOverDcMotor right_DriveTrain;
+    private DcMotorEx left_DriveTrain;
+    private DcMotorEx right_DriveTrain;
 
     private final double TICKS_PER_METER = 28.0;
     private final double TRACK_WIDTH = 0.09;
@@ -27,11 +27,11 @@ public class Chassis extends SubsystemBase {
     private double rightOffset = 0.0;
 
     public Chassis (HardwareMap hardwareMap){
-        left_DriveTrain = (IOverDcMotor) hardwareMap.get(DcMotorEx.class,"left_Drive");
-        right_DriveTrain = (IOverDcMotor) hardwareMap.get(DcMotorEx.class, "right_Drive");
+        left_DriveTrain = (DcMotorEx) hardwareMap.get(DcMotorEx.class,"left_Drive");
+        right_DriveTrain = (DcMotorEx) hardwareMap.get(DcMotorEx.class, "right_Drive");
 
-        left_DriveTrain.setDirection(IOverDcMotor.Direction.FORWARD);
-        right_DriveTrain.setDirection(IOverDcMotor.Direction.REVERSE);
+        left_DriveTrain.setDirection(DcMotorEx.Direction.FORWARD);
+        right_DriveTrain.setDirection(DcMotorEx.Direction.REVERSE);
 
         differentialDriveOdometry = new DifferentialDriveOdometry(new Rotation2d());
         imu = hardwareMap.get(IMU.class, "imu");
