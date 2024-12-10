@@ -9,6 +9,8 @@ public class Arm extends SubsystemBase {
     private final DcMotor armMotor;
     private final AnalogInput potentiometer;
 
+    // Gabo cool!
+
     // Predefined positions for the arm (in potentiometer voltage or mapped values)
     private final double GROUND_POSITION = 0.5;  // Example voltage for ground level
     private final double MID_POSITION = 1.5;     // Example voltage for mid level
