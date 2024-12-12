@@ -12,14 +12,13 @@ public class MoveArm extends CommandBase {
         addRequirements(arm);
     }
     @Override
-    public void initialize(){
+    public void initialize() {
         arm.setTarget(targetPos);
     }
 
-    @Override
-    public boolean isFinished(){
-        double currentPosition = arm.getPosition() ;
-        return Math.abs(targetPos-currentPosition)<0.05;
-    }
-
+    /*@Override
+    public boolean isFinished() {
+        double currentVoltage = arm.getVoltage();
+        return Math.abs(targetPos - currentVoltage) < 0.01;
+    }*/
 }

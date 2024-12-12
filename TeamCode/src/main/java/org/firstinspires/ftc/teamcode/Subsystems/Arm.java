@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 import com.overture.ftc.overftclib.Devices.IOverDcMotor;
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -9,23 +10,18 @@ import com.overture.ftc.overftclib.Contollers.TrapezoidProfile;
 public class Arm extends SubsystemBase {
     private DcMotorEx arm_Motor;
     private ProfiledPIDController armPID;
-    public static final double COUNTS_PER_REV = 384.5;
-    public static final double GEAR_RATIO= 13.7;
-    private double ARM_OFFSET = 46;
+    private AnalogInput potentiometer;
 
     public Arm (HardwareMap hardwareMap){
-       arm_Motor = (DcMotorEx) hardwareMap.get(DcMotorEx.class, "arm_Motor");
-       armPID = new ProfiledPIDController(0.0,0.0,0.0,
-               new TrapezoidProfile.Constraints (0.0,0.0));
+       arm_Motor = (DcMotorEx) hardwareMap.get(DcMotor.class, "arm_Motor");
+       armPID = new ProfiledPIDController(0.1,0.0,0.0, new TrapezoidProfile.Constraints (2.0,3.0));
 
        arm_Motor.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
        arm_Motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
-       armPID.reset(getPosition());
-       armPID.setGoal(getPosition());
 
     }
 
-    public void resetZero(){
+   /* public void resetZero(){
         ARM_OFFSET= arm_Motor.getCurrentPosition();
     }
 
@@ -40,13 +36,23 @@ public class Arm extends SubsystemBase {
             armPID.reset(getPosition());
             armPID.setGoal(targetPos);
         }
+    }*/
+
+    public void setTarget(double targetPosition) {
+        double currentVoltage = potentiometer.getVoltage();
+        armPID.calculate(currentVoltage, targetPosition);
+    }
+
+    /*public double getVoltage() {
+        double currentPosition = potentiometer.getVoltage();
+        return currentPosition;
     }
 
     @Override
     public void periodic(){
-        double motorOutput = armPID.calculate(getPosition());
+        double motorOutput = armPID.calculate(getVoltage());
         arm_Motor.setPower(motorOutput);
     }
-
+*/
 
 }
