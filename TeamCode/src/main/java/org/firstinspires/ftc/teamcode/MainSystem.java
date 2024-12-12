@@ -44,10 +44,14 @@ public class MainSystem extends LinearOpMode {
             operatorButtonA.whenReleased(new MoveArm(arm,30));*/
 
             Button operatorButtonY= operator.getGamepadButton(GamepadKeys.Button.Y);
-            operatorButtonY.whenHeld(new ElevatorPositions(elevator,0.30));
-            operatorButtonY.whenReleased(new ElevatorPositions(elevator, 0.30));
+            operatorButtonY.whenPressed(new ElevatorPositions(elevator,20.0));
 
-            waitForStart();
+        Button operatorButtonX= operator.getGamepadButton(GamepadKeys.Button.X);
+        operatorButtonX.whenPressed(new ElevatorPositions(elevator,0.0));
+
+
+
+        waitForStart();
             chassis.reset(new Pose2d(0,0, Rotation2d.fromDegrees(0))); /*When the Op mode starts,
                                                                 every value will return to be zero*/
 
@@ -63,6 +67,7 @@ public class MainSystem extends LinearOpMode {
                 telemetry.addData("LeftDistance", chassis.leftDistance());
                 telemetry.addData("Potentiometer voltage", arm.getVoltage());*/
                 telemetry.addData("Elevator_Distance", elevator.getHeight());
+                telemetry.addData("Maxvoltage", arm.getPointometerMaxVoltage());
                 // -- UPDATE TELEMETRY -- //
                 telemetry.update();
             }

@@ -13,7 +13,7 @@ public class MoveArm extends CommandBase {
     }
     @Override
     public void initialize() {
-        arm.setTarget(targetPos);
+       // arm.setTarget(targetPos);
     }
 
     /*@Override
