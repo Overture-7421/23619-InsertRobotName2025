@@ -2,23 +2,34 @@ package org.firstinspires.ftc.teamcode.Commands;
 import com.arcrobotics.ftclib.command.CommandBase;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 
-public class MoveArm extends CommandBase {
-    private final Arm arm;
-    private final double targetPos;
 
-    public MoveArm(Arm arm, double targetPos){
-        this.arm=arm;
-        this.targetPos=targetPos/360;
-        addRequirements(arm);
+
+public class MoveArm extends CommandBase {
+    private final Arm armSubsystem;
+    private final double targetAngle;
+
+    public MoveArm(Arm armSubsystem, double targetAngle){
+        this.armSubsystem = armSubsystem;
+        this.targetAngle= targetAngle;
+
+        addRequirements(armSubsystem);
     }
+
     @Override
     public void initialize() {
-       // arm.setTarget(targetPos);
+        armSubsystem.moveToPosition(targetAngle);
     }
 
-    /*@Override
-    public boolean isFinished() {
-        double currentVoltage = arm.getVoltage();
-        return Math.abs(targetPos - currentVoltage) < 0.01;
-    }*/
+    @ Override public void execute() {    }
+
+    @Override
+    public boolean isFinished(){
+
+        return armSubsystem.isAtTarget();
+    }
+
+    @Override
+    public void end(boolean interrupted){
+        armSubsystem.stop();
+    }
 }
