@@ -45,30 +45,36 @@ public class MainSystem extends LinearOpMode {
         chassis.setDefaultCommand(new MoveChassis(chassis, gamepad1));
         elevator.setDefaultCommand(new MoveElevatorJoystick(elevator, gamepad2));
 
-        // Define arm positions (update these with actual voltage values for your setup)
-        double groundPosition = 0.5; // Example voltage
-        double midPosition = 1.5;    // Example voltage
-        double highPosition = 2.5;   // Example voltage
 
         // Wait for start
         waitForStart();
 
         while (opModeIsActive()) {
+            double targetAngle = arm.getTargetAngle();
+            double currentAngle = arm.getCurrentAngle();
+            double motorPower = arm.getMotorPower();
+
             // Telemetry for subsystems
             telemetry.addData("Chassis Pose", chassis.getPose());
             telemetry.addData("Elevator Position", elevator.getPosition());
-            telemetry.addData("Arm Potentiometer Voltage", arm.getPotentiometerVoltage());
+            telemetry.addData("Target Angle", targetAngle);
+            telemetry.addData("Current Angle", currentAngle);
+            telemetry.addData("Motor Power", motorPower);
             telemetry.update();
 
-            // Control the arm with gamepad buttons
-            if (operatorGamepad.getButton(GamepadKeys.Button.DPAD_DOWN)) {
-                CommandScheduler.getInstance().schedule(new MoveArm(arm, groundPosition));
-            } else if (operatorGamepad.getButton(GamepadKeys.Button.DPAD_RIGHT)) {
-                CommandScheduler.getInstance().schedule(new MoveArm(arm, midPosition));
-            } else if (operatorGamepad.getButton(GamepadKeys.Button.DPAD_UP)) {
-                CommandScheduler.getInstance().schedule(new MoveArm(arm, highPosition));
-            }
 
+            /* ARM OPERATION */
+            Button operatorButtonDPAD_UP = operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+            operatorButtonDPAD_UP.whenPressed(new MoveArm(arm, 45.0));
+
+            Button operatorButtonDPAD_DOWN = operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
+            operatorButtonDPAD_DOWN.whenPressed(new MoveArm(arm, -45.0));
+
+            Button operatorButtonDPAD_LEFT = operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
+            operatorButtonDPAD_LEFT.whenPressed(new MoveArm(arm, 0.0));
+
+
+            /* INTAKE OPERATION */
             Button operatorButtonY= operatorGamepad.getGamepadButton(GamepadKeys.Button.Y);
             operatorButtonY.whenHeld(new MoveIntake(intake,1.0));
             operatorButtonY.whenReleased(new MoveIntake(intake,0.0));

@@ -5,30 +5,26 @@ import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 
 public class MoveArm extends CommandBase {
     private final Arm armSubsystem;
-    private final double targetPosition;
+    private final double targetAngle;
 
-    public MoveArm(Arm armSubsystem, double targetPosition) {
+    public MoveArm(Arm armSubsystem, double targetAngle) {
         this.armSubsystem = armSubsystem;
-        this.targetPosition = targetPosition;
+        this.targetAngle = targetAngle;
 
         addRequirements(armSubsystem);
     }
 
     @Override
     public void initialize() {
-        // No initialization needed
+        armSubsystem.moveToPosition(targetAngle);
     }
 
     @Override
-    public void execute() {
-        armSubsystem.moveToPosition(targetPosition);
-    }
+    public void execute() { /* NONE */ }
 
     @Override
     public boolean isFinished() {
-        // Stop when the arm is close enough to the target position
-        double currentVoltage = armSubsystem.getPotentiometerVoltage();
-        return Math.abs(targetPosition - currentVoltage) < 0.05; // Adjust tolerance as needed
+        return armSubsystem.isAtTarget();
     }
 
     @Override

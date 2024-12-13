@@ -3,66 +3,73 @@ package org.firstinspires.ftc.teamcode.Subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
+import com.overture.ftc.overftclib.Contollers.ProfiledPIDController;
+import com.overture.ftc.overftclib.Contollers.TrapezoidProfile;
 
 public class Arm extends SubsystemBase {
     private final DcMotor armMotor;
     private final AnalogInput potentiometer;
 
-    // Gabo cool!
+    private double lastTargetAngle;
+    private double lastMotorPower;
 
-    // Predefined positions for the arm (in potentiometer voltage or mapped values)
-    private final double GROUND_POSITION = 0.5;  // Example voltage for ground level
-    private final double MID_POSITION = 1.5;     // Example voltage for mid level
-    private final double HIGH_POSITION = 2.5;    // Example voltage for high level
+    // PID and trapezoid profile constraints
+    private final ProfiledPIDController profiledPIDController;
 
-    // PID constants (tune these for your specific setup)
-    private final double kP = 0.5;
-    private final double kI = 0.0;
-    private final double kD = 0.1;
-
-    private double integral = 0.0;
-    private double previousError = 0.0;
-
-    public Arm (HardwareMap hardwareMap) {
+    public Arm(HardwareMap hardwareMap) {
         armMotor = hardwareMap.get(DcMotor.class, "arm_Motor");
         potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
 
         armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+        armMotor.setDirection(DcMotor.Direction.REVERSE);
+
+        // Profiled PID Controller
+        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(5, 2.5);
+        profiledPIDController = new ProfiledPIDController(0.1, 0.0, 0.0, constraints);
+
+        // Tolerances
+        profiledPIDController.setTolerance(1.0);
+        profiledPIDController.reset(voltageToAngle(potentiometer.getVoltage()));
+        profiledPIDController.enableContinuousInput(-180, 180);
     }
 
-    public void moveToPosition(double targetVoltage) {
-        double currentVoltage = potentiometer.getVoltage();
-        double error = targetVoltage - currentVoltage;
+    private double voltageToAngle(double voltage) {
+        return (15.291 * Math.pow(this.getVoltage(), 2) + 27.952 * this.getVoltage() + 0.0907) - 45;
+    }
 
-        integral += error;
-        double derivative = error - previousError;
+    public void moveToPosition(double targetAngle) {
+        double currentAngle = voltageToAngle(potentiometer.getVoltage());
+        profiledPIDController.setGoal(targetAngle);
+        double power = profiledPIDController.calculate(currentAngle);
+        armMotor.setPower(Math.max(-1.0, Math.min(1.0, power)));
 
-        double power = kP * error + kI * integral + kD * derivative;
+        lastTargetAngle = targetAngle;
+        lastMotorPower = power;
+    }
 
-        armMotor.setPower(power);
+    public boolean isAtTarget() {
+        return profiledPIDController.atGoal();
+    }
 
-        previousError = error;
+    public double getVoltage(){
+        return -potentiometer.getVoltage() + 3.3;
     }
 
     public void stop() {
         armMotor.setPower(0);
     }
 
-    public void moveToGround() {
-        moveToPosition(GROUND_POSITION);
+    public double getTargetAngle() {
+        return lastTargetAngle;
     }
 
-    public void moveToMid() {
-        moveToPosition(MID_POSITION);
+    public double getCurrentAngle() {
+        return voltageToAngle(potentiometer.getVoltage());
     }
 
-    public void moveToHigh() {
-        moveToPosition(HIGH_POSITION);
+    public double getMotorPower() {
+        return lastMotorPower;
     }
-
-    public double getPotentiometerVoltage() {
-        return potentiometer.getVoltage();
-    }
-
 }

@@ -7,6 +7,7 @@ import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveOdome
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.IMU;
 
@@ -34,8 +35,8 @@ public class Chassis extends SubsystemBase {
         leftDrive = (DcMotorEx) hardwareMap.get(DcMotor.class, "left_Drive");
 
         // Invert one motor
-        rightDrive.setDirection(DcMotor.Direction.REVERSE);
-        leftDrive.setDirection(DcMotor.Direction.FORWARD);
+        rightDrive.setDirection(DcMotor.Direction.FORWARD);
+        leftDrive.setDirection(DcMotor.Direction.REVERSE);
 
         // Odometry initialization
         diffOdom = new DifferentialDriveOdometry(new Rotation2d());
@@ -54,8 +55,8 @@ public class Chassis extends SubsystemBase {
 
     // Set Speed Function
     public void setSpeed(double linearSpeed, double angularSpeed){
-        rightDrive.setPower(linearSpeed - angularSpeed);
-        leftDrive.setPower(linearSpeed + angularSpeed);
+        rightDrive.setPower(linearSpeed + angularSpeed);
+        leftDrive.setPower(linearSpeed - angularSpeed);
     }
 
     // Get Right Distance (Position)
