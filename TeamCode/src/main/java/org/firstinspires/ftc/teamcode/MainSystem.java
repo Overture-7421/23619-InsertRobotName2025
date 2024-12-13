@@ -65,10 +65,10 @@ public class MainSystem extends LinearOpMode {
 
             /* ARM OPERATION */
             Button operatorButtonDPAD_UP = operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_UP);
-            operatorButtonDPAD_UP.whenPressed(new MoveArm(arm, 45.0));
+            operatorButtonDPAD_UP.whenPressed(new MoveArm(arm, 20.0));
 
             Button operatorButtonDPAD_DOWN = operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
-            operatorButtonDPAD_DOWN.whenPressed(new MoveArm(arm, -45.0));
+            operatorButtonDPAD_DOWN.whenPressed(new MoveArm(arm, -40.0));
 
             Button operatorButtonDPAD_LEFT = operatorGamepad.getGamepadButton(GamepadKeys.Button.DPAD_LEFT);
             operatorButtonDPAD_LEFT.whenPressed(new MoveArm(arm, 0.0));

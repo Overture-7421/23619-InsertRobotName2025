@@ -15,12 +15,9 @@ public class MoveArm extends CommandBase {
     }
 
     @Override
-    public void initialize() {
+    public void execute() {
         armSubsystem.moveToPosition(targetAngle);
     }
-
-    @Override
-    public void execute() { /* NONE */ }
 
     @Override
     public boolean isFinished() {

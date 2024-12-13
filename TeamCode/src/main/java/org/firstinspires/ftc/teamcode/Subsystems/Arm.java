@@ -26,11 +26,11 @@ public class Arm extends SubsystemBase {
         armMotor.setDirection(DcMotor.Direction.REVERSE);
 
         // Profiled PID Controller
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(5, 2.5);
-        profiledPIDController = new ProfiledPIDController(0.1, 0.0, 0.0, constraints);
+        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(200.0, 150.0);
+        profiledPIDController = new ProfiledPIDController(0.065, 0.0, 0.0, constraints);
 
         // Tolerances
-        profiledPIDController.setTolerance(1.0);
+        profiledPIDController.setTolerance(0.05);
         profiledPIDController.reset(voltageToAngle(potentiometer.getVoltage()));
         profiledPIDController.enableContinuousInput(-180, 180);
     }
