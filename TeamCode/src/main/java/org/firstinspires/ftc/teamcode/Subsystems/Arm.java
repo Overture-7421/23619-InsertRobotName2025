@@ -1,62 +1,64 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
-import com.overture.ftc.overftclib.Devices.IOverDcMotor;
-import com.qualcomm.robotcore.hardware.AnalogInput;
+
+import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.overture.ftc.overftclib.Contollers.ProfiledPIDController;
 import com.overture.ftc.overftclib.Contollers.TrapezoidProfile;
-import java.lang.Math;
+import com.arcrobotics.ftclib.controller.PIDFController;
 
+public class Arm extends SubsystemBase {
 
-public class Arm extends SubsystemBase{
-    private final DcMotor armMotor;
-    private final AnalogInput potentiometer;
-    private final ProfiledPIDController profiledPIDController;
-    public Arm ( HardwareMap hardwareMap){
-        armMotor = hardwareMap.get(DcMotor.class, "arm_Motor");
-        potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+    private DcMotorEx motor;
+    private ProfiledPIDController armPID;
 
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(5, 2.5);
-        profiledPIDController = new ProfiledPIDController(0.01,0.0,0.0, constraints);
+    public static final double COUNTS_PER_REV = 28.0;
 
-        //Tolerances
-        profiledPIDController.setTolerance(1.0);
-        profiledPIDController.reset(voltageToAngle(potentiometer.getVoltage()));
-        profiledPIDController.enableContinuousInput(-180,180);
+    public static final double MOTOR_GEAR_RATIO = 0.128;
 
-    }
-    private double voltageToAngle(double voltage) {
-        //return ((-voltage + 3.3) * 62.15) - 45;
-        return (15.291 *Math.pow(this.getVoltage(), 2 )+27.952*this.getVoltage()+0.0907)-45;
-    }
-    public void moveToPosition(double targetAngle){
-        double currentAngle= voltageToAngle(potentiometer.getVoltage());
+    private double motorOffset = 48.0;
 
-        profiledPIDController.setGoal(targetAngle);
-        double power= profiledPIDController.calculate(currentAngle);
+    public Arm(HardwareMap hardwareMap) {
 
-        armMotor.setPower(power);
+        motor = (DcMotorEx) hardwareMap.get(DcMotor.class, "arm_Motor");
+
+        armPID = new ProfiledPIDController(0.01, 0, 0.0, new TrapezoidProfile.Constraints(3, 2));
+
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
+
+        //resetZero();
+
+        armPID.reset(getPosition());
+        armPID.setGoal(getPosition());
     }
 
-    public boolean isAtTarget(){
-        return profiledPIDController.atGoal();
-
+    public void resetZero() {
+        motorOffset = motor.getCurrentPosition();
     }
 
-    public double getVoltage(){
-        return -potentiometer.getVoltage() + 3.3;
+    public double getPosition() {
+        double currentTicks = motor.getCurrentPosition();
+        double currentPosition = (currentTicks / (COUNTS_PER_REV * MOTOR_GEAR_RATIO))  - (motorOffset/360.0);
+        return currentPosition;
     }
 
-    public void stop(){
-        armMotor.setPower(0);
-    }
 
-    public double getCurrentAngle(){
-        return voltageToAngle(this.getVoltage());
+
+
+    public void setTarget(double targetHeight) {
+        if (armPID.getGoal().position != targetHeight) {
+            armPID.reset(getPosition());
+            armPID.setGoal(targetHeight);
+        }
+    }
+    @Override
+    public void periodic() {
+        double motorOutput = armPID.calculate(getPosition());
+        motor.setPower(motorOutput);
+
     }
 }

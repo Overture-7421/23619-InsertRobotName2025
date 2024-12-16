@@ -1,10 +1,10 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.overture.ftc.overftclib.Devices.IOverDcMotor;
 import com.qualcomm.hardware.rev.RevHubOrientationOnRobot;
 import com.qualcomm.robotcore.hardware.IMU;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.kinematics.wpilibkinematics.DifferentialDriveOdometry;
@@ -27,8 +27,8 @@ public class Chassis extends SubsystemBase {
     private double rightOffset = 0.0;
 
     public Chassis (HardwareMap hardwareMap){
-        left_DriveTrain = (DcMotorEx) hardwareMap.get(DcMotorEx.class,"left_Drive");
-        right_DriveTrain = (DcMotorEx) hardwareMap.get(DcMotorEx.class, "right_Drive");
+        left_DriveTrain = (DcMotorEx) hardwareMap.get(DcMotor.class,"left_Drive");
+        right_DriveTrain = (DcMotorEx) hardwareMap.get(DcMotor.class, "right_Drive");
 
         left_DriveTrain.setDirection(DcMotorEx.Direction.FORWARD);
         right_DriveTrain.setDirection(DcMotorEx.Direction.REVERSE);

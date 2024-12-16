@@ -12,7 +12,8 @@ public class Elevator extends SubsystemBase {
     private final DcMotorEx elevatorMotor;
     private ProfiledPIDController elevatorMotorPID;
     public static final double TICKS_PER_REVOLUTION = 753.2;
-    public static final double ELEVATOR_WINCH_CIRCUMFERENCE = 12.0008738; // In Meters diameter: 3.82 cm
+    public static final double ELEVATOR_WINCH_CIRCUMFERENCE = 12.0008738;
+    // In Meters diameter: 3.82 cm
     public static final double GEAR_REDUCTION = 26.9;
 
     private double motorOffset = 0.0;
