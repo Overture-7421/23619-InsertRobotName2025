@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
-import org.firstinspires.ftc.teamcode.Commands.MoveArm;
+import org.firstinspires.ftc.teamcode.Commands.BasketPos;
 import org.firstinspires.ftc.teamcode.Subsystems.Chassis;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Elevator;
@@ -47,8 +48,13 @@ public class MainSystem extends LinearOpMode {
             operatorButtonY.whenPressed(new ElevatorPositions(elevator,20.0));
 
         Button operatorButtonX= operator.getGamepadButton(GamepadKeys.Button.X);
-        operatorButtonX.whenPressed(new ElevatorPositions(elevator,0.0));
+        operatorButtonX.whenPressed(new ElevatorPositions(elevator,0));
 
+        /*Button operatorButtonA=operator.getGamepadButton(GamepadKeys.Button.A);
+        operatorButtonA.whenPressed(new BasketPos(arm, elevator, 0, 0));*/
+
+        Button operatorButtonA=operator.getGamepadButton(GamepadKeys.Button.A);
+        operatorButtonA.whenPressed(new BasketPos(arm, elevator, Constants.Arm.ARMHIGHCHAMBER, Constants.Elevator.ELEVATORHIGHCHAMBER));
 
 
         waitForStart();
@@ -67,7 +73,7 @@ public class MainSystem extends LinearOpMode {
                 telemetry.addData("LeftDistance", chassis.leftDistance());
                 telemetry.addData("Potentiometer voltage", arm.getVoltage());*/
                 telemetry.addData("Elevator_Distance", elevator.getHeight());
-                telemetry.addData("Maxvoltage", arm.getPointometerMaxVoltage());
+
                 // -- UPDATE TELEMETRY -- //
                 telemetry.update();
             }
