@@ -6,6 +6,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.Commands.ElevatorPositions;
+
+import com.acmerobotics.dashboard.FtcDashboard;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -16,7 +18,6 @@ import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.command.button.Button;
 import org.firstinspires.ftc.teamcode.Commands.MoveArm;
 import org.firstinspires.ftc.teamcode.Commands.MoveIntake;
-import com.acmerobotics.ftclib.command.ftcDaschboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 
 
@@ -24,6 +25,10 @@ import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 public class MainSystem extends LinearOpMode {
     @Override
         public void runOpMode(){
+            CommandScheduler.getInstance().cancelAll();
+            CommandScheduler.getInstance().reset();
+            telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry());
+
             Chassis chassis = new Chassis(hardwareMap); //Here you can add every element of the robot
             Intake intake = new Intake(hardwareMap);
             Arm arm = new Arm(hardwareMap);
