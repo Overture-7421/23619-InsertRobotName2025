@@ -1,81 +1,66 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
-import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
-import com.overture.ftc.overftclib.Contollers.ProfiledPIDController;
-import com.overture.ftc.overftclib.Contollers.TrapezoidProfile;
 
+import com.overture.ftc.overftclib.Contollers.PIDController;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+
+@Config
 public class Arm extends SubsystemBase {
-    private final DcMotor armMotor;
-    private final AnalogInput potentiometer;
 
-    private double lastTargetAngle;
-    private double lastMotorPower;
+    private final DcMotorEx motor;
+    private final PIDController armPID;
+    private final Telemetry telemetry;
 
-    // PID and trapezoid profile constraints
-    private final ProfiledPIDController profiledPIDController;
+    public static final double COUNTS_PER_REV = 8192;
+    private static final double OFFSET = 47;
+    public static double target = 0;
+    public static double ff = 0.175;
+    //public static double p = 0.0;
 
     public Arm(HardwareMap hardwareMap) {
-        armMotor = hardwareMap.get(DcMotor.class, "arm_Motor");
-        potentiometer = hardwareMap.get(AnalogInput.class, "potentiometer");
+        FtcDashboard dashboard = FtcDashboard.getInstance();
+        telemetry = dashboard.getTelemetry();
+        motor = (DcMotorEx) hardwareMap.get(DcMotor.class, "arm_Motor");
 
-        armMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-        armMotor.setDirection(DcMotor.Direction.REVERSE);
+        armPID = new PIDController(0.045, 0, 0.0);
 
-        // Profiled PID Controller
-        TrapezoidProfile.Constraints constraints = new TrapezoidProfile.Constraints(200.0, 150.0);
-        profiledPIDController = new ProfiledPIDController(0.065, 0.0, 0.0, constraints);
+        motor.setDirection(DcMotorSimple.Direction.REVERSE);
+        motor.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        motor.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        motor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+    }
 
-        // Tolerances
-        profiledPIDController.setTolerance(0.05);
-        profiledPIDController.reset(voltageToAngle(potentiometer.getVoltage()));
-        profiledPIDController.enableContinuousInput(-180, 180);
-
+    private double armFeedForward(double angle){
+        return ((Math.cos(Math.toRadians(angle))) * ff);
 
     }
 
-    //Proportional feedforward to angle
-    private double feedForwardV(double neededAngle){
-        return Math.cos(neededAngle*(Math.PI/180))*(8/*feedforwarth value*/) ;
-    }
-    private double voltageToAngle(double voltage) {
-        return (15.291 * Math.pow(this.getVoltage(), 2) + 27.952 * this.getVoltage() + 0.0907) - 45;
+    public double getPosition() {
+        double currentTicks = motor.getCurrentPosition();
+        return ((currentTicks / COUNTS_PER_REV) * 360 - OFFSET);
     }
 
-    public void moveToPosition(double targetAngle) {
-        double currentAngle = voltageToAngle(potentiometer.getVoltage());
-        profiledPIDController.setGoal(targetAngle);
-        double power = profiledPIDController.calculate(currentAngle) + feedForwardV(currentAngle);
-        armMotor.setPower(Math.max(-1.0, Math.min(1.0, power)));
 
-        lastTargetAngle = targetAngle;
-        lastMotorPower = power;
+    public void setTarget(double targetPos) {
+        target = targetPos;
+
     }
+    @Override
+    public void periodic() {
+        double motorOutput = armPID.calculate(getPosition(), target);
+        motor.setPower(motorOutput + armFeedForward(getPosition()));
 
-    public boolean isAtTarget() {
-        return profiledPIDController.atGoal();
-    }
+        telemetry.addData("Arm Position", getPosition());
+        telemetry.addData("Arm Target", target);
 
-    public double getVoltage(){
-        return -potentiometer.getVoltage() + 3.3;
-    }
 
-    public void stop() {
-        armMotor.setPower(0);
-    }
-
-    public double getTargetAngle() {
-        return lastTargetAngle;
-    }
-
-    public double getCurrentAngle() {
-        return voltageToAngle(potentiometer.getVoltage());
-    }
-
-    public double getMotorPower() {
-        return lastMotorPower;
     }
 }

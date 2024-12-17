@@ -8,9 +8,12 @@ repositories {
     maven{
         url "https://overture-7421.github.io/overturelib/repo/"
     }
-    maven{
+
+    maven {
         url "https://maven.brott.dev/"
     }
+
+
 }
 
 dependencies {
