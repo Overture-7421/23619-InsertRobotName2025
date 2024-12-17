@@ -1,4 +1,5 @@
 package org.firstinspires.ftc.teamcode;
+import org.firstinspires.ftc.teamcode.Commands.LowBasket;
 import org.firstinspires.ftc.teamcode.Commands.MoveArm;
 import org.firstinspires.ftc.teamcode.Subsystems.Chassis;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
@@ -7,6 +8,8 @@ import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.Commands.ElevatorPositions;
 
+import com.acmerobotics.dashboard.FtcDashboard;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.geometry.Pose2d;
@@ -26,6 +29,7 @@ public class MainSystem extends LinearOpMode {
 
         CommandScheduler.getInstance().cancelAll();
         CommandScheduler.getInstance().reset();
+        telemetry = new MultipleTelemetry( FtcDashboard.getInstance().getTelemetry());
 
 
             Chassis chassis = new Chassis(hardwareMap); //Here you can add every element of the robot
@@ -60,6 +64,9 @@ public class MainSystem extends LinearOpMode {
         Button operatorButtonDPAD= operator.getGamepadButton(GamepadKeys.Button.DPAD_UP);
         operatorButtonDPAD.whenPressed(new ElevatorPositions(elevator,0.0));
 
+        /*Button operatorButtonDPAD= operator.getGamepadButton(GamepadKeys.Button.DPAD_UP);
+        operatorButtonDPAD.whenPressed(new LowBasket(elevator arm));*/
+
 
         /*Button operatorButtonA= operator.getGamepadButton(GamepadKeys.Button.A);
         operatorButtonA.whenPressed(new ElevatorPositions(elevator,0.0));*/
@@ -86,7 +93,7 @@ public class MainSystem extends LinearOpMode {
                 telemetry.addData("LeftDistance", chassis.leftDistance());
                 telemetry.addData("Potentiometer voltage", arm.getVoltage());*/
                 telemetry.addData("Elevator_Distance", elevator.getHeight());
-                telemetry.addData("Arm Position", arm.getPosition());
+
                 // -- UPDATE TELEMETRY -- //
                 telemetry.update();
 
