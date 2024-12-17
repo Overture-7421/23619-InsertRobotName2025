@@ -6,6 +6,8 @@ import org.firstinspires.ftc.teamcode.Commands.MoveIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.Commands.ElevatorPositions;
+
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.CommandScheduler;
 import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.arcrobotics.ftclib.geometry.Rotation2d;
@@ -21,6 +23,11 @@ import org.firstinspires.ftc.teamcode.Commands.Drive;
 public class MainSystem extends LinearOpMode {
     @Override
         public void runOpMode(){
+
+        CommandScheduler.getInstance().cancelAll();
+        CommandScheduler.getInstance().reset();
+
+
             Chassis chassis = new Chassis(hardwareMap); //Here you can add every element of the robot
             Intake intake = new Intake(hardwareMap);
             Arm arm = new Arm(hardwareMap);
@@ -41,18 +48,21 @@ public class MainSystem extends LinearOpMode {
             operatorButtonB.whenHeld(new MoveIntake(intake,-1.0));
             operatorButtonB.whenReleased(new MoveIntake(intake,0.0));
 
-        /*Button operatorButtonA= operator.getGamepadButton(GamepadKeys.Button.A);
-        operatorButtonA.whenHeld(new MoveArm(arm,30));
-        operatorButtonA.whenReleased(new MoveArm(arm,30));*/
+        Button operatorButtonA= operator.getGamepadButton(GamepadKeys.Button.A);
+        operatorButtonA.whenPressed(new MoveArm(arm,0.0));
 
         Button operatorButtonY= operator.getGamepadButton(GamepadKeys.Button.Y);
-        operatorButtonY.whenPressed(new ElevatorPositions(elevator,60.0));
+        operatorButtonY.whenPressed(new MoveArm(arm,-25.0));
+
+        //Button operatorButtonY= operator.getGamepadButton(GamepadKeys.Button.Y);
+        //operatorButtonY.whenPressed(new ElevatorPositions(elevator,60.0));
 
         Button operatorButtonDPAD= operator.getGamepadButton(GamepadKeys.Button.DPAD_UP);
-        operatorButtonDPAD.whenPressed(new ElevatorPositions(elevator,30.0));
+        operatorButtonDPAD.whenPressed(new ElevatorPositions(elevator,0.0));
 
-        Button operatorButtonA= operator.getGamepadButton(GamepadKeys.Button.A);
-        operatorButtonA.whenPressed(new ElevatorPositions(elevator,0.0));
+
+        /*Button operatorButtonA= operator.getGamepadButton(GamepadKeys.Button.A);
+        operatorButtonA.whenPressed(new ElevatorPositions(elevator,0.0));*/
 
 
 
@@ -60,7 +70,11 @@ public class MainSystem extends LinearOpMode {
             chassis.reset(new Pose2d(0,0, Rotation2d.fromDegrees(0))); /*When the Op mode starts,
                                                                 every value will return to be zero*/
 
+
+
             while (opModeIsActive()) { //This will occur whenever the op mode is active
+
+
                 CommandScheduler.getInstance().run();
                 Pose2d pose = chassis.getPose();
 
@@ -72,7 +86,7 @@ public class MainSystem extends LinearOpMode {
                 telemetry.addData("LeftDistance", chassis.leftDistance());
                 telemetry.addData("Potentiometer voltage", arm.getVoltage());*/
                 telemetry.addData("Elevator_Distance", elevator.getHeight());
-                telemetry.addData("Arm Position", arm.getPosition()*360.0);
+                telemetry.addData("Arm Position", arm.getPosition());
                 // -- UPDATE TELEMETRY -- //
                 telemetry.update();
 

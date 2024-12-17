@@ -10,9 +10,9 @@ public class MoveArm extends CommandBase {
 
     private final double targetPosition;
 
-    public MoveArm(Arm arm, double targetPosition) {
-        this.arm = arm;
-        this.targetPosition = targetPosition / 360;
+    public MoveArm(Arm subsystem, double targetPosition) {
+        this.arm = subsystem;
+        this.targetPosition = targetPosition;
         addRequirements(arm);
     }
 
@@ -24,6 +24,6 @@ public class MoveArm extends CommandBase {
     @Override
     public boolean isFinished() {
         double currentPosition = arm.getPosition();
-        return Math.abs(targetPosition - currentPosition) < 0.05;
+        return Math.abs(targetPosition - currentPosition) < 0.5;
     }
 }

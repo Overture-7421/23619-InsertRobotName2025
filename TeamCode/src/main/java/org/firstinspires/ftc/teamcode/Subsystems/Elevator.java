@@ -44,8 +44,8 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setGoal(double goalHeight) {
+        elevatorMotorPID.reset(getHeight());
         if(elevatorMotorPID.getGoal().position != goalHeight) {
-            elevatorMotorPID.reset(getHeight());
             elevatorMotorPID.setGoal(goalHeight);
         }
     }
