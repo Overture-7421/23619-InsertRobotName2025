@@ -53,16 +53,19 @@ public class MainSystem extends LinearOpMode {
             operatorButtonB.whenReleased(new MoveIntake(intake,0.0));
 
         Button operatorButtonA= operator.getGamepadButton(GamepadKeys.Button.A);
-        operatorButtonA.whenPressed(new MoveArm(arm,0.0));
+        operatorButtonA.whenPressed(new MoveArm(arm,90.0));
 
         Button operatorButtonY= operator.getGamepadButton(GamepadKeys.Button.Y);
-        operatorButtonY.whenPressed(new MoveArm(arm,-25.0));
+        operatorButtonY.whenPressed(new MoveArm(arm,0.0));
 
         //Button operatorButtonY= operator.getGamepadButton(GamepadKeys.Button.Y);
         //operatorButtonY.whenPressed(new ElevatorPositions(elevator,60.0));
 
         Button operatorButtonDPAD= operator.getGamepadButton(GamepadKeys.Button.DPAD_UP);
-        operatorButtonDPAD.whenPressed(new ElevatorPositions(elevator,0.0));
+        operatorButtonDPAD.whenPressed(new ElevatorPositions(elevator,60.0));
+
+        Button operatorButtonDPD= operator.getGamepadButton(GamepadKeys.Button.DPAD_DOWN);
+        operatorButtonDPD.whenPressed(new ElevatorPositions(elevator,0.0));
 
         /*Button operatorButtonDPAD= operator.getGamepadButton(GamepadKeys.Button.DPAD_UP);
         operatorButtonDPAD.whenPressed(new LowBasket(elevator arm));*/

@@ -17,29 +17,23 @@ public class Elevator extends SubsystemBase {
 
     private final Telemetry telemetry;
     private final DcMotorEx elevatorMotor;
-    //private ProfiledPIDController elevatorMotorPID;
     private PIDController elevatorMotorPID;
-    public static final double TICKS_PER_REVOLUTION = 753.2;
-    public static final double ELEVATOR_WINCH_CIRCUMFERENCE = 12.0008738;
+    private final double TICKS_PER_REVOLUTION = 753.2;
+    private  final double ELEVATOR_WINCH_CIRCUMFERENCE = 12.0008738;
     // In Meters diameter: 3.82 cm
-    public static final double GEAR_REDUCTION = 26.9;
+    private final double GEAR_REDUCTION = 26.9;
 
-    public static double target = 0;
-    public static double p = 0;
+    private  double target = 0;
 
     public Elevator(HardwareMap hardwareMap) {
         FtcDashboard dashboard = FtcDashboard.getInstance();
         telemetry = dashboard.getTelemetry();
         elevatorMotor = (DcMotorEx) hardwareMap.get(DcMotor.class, "elevator_Motor");
 
-        //elevatorMotorPID = new ProfiledPIDController(1.0,0,0, new TrapezoidProfile.Constraints(100.0,80.0));
-
+        elevatorMotorPID = new PIDController(0.6,0,0);
         elevatorMotor.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         elevatorMotor.setZeroPowerBehavior(DcMotorEx.ZeroPowerBehavior.BRAKE);
         elevatorMotor.setDirection(DcMotorSimple.Direction.REVERSE);
-
-        //elevatorMotorPID.reset(getHeight());
-        //elevatorMotorPID.setGoal(getHeight());
 
     }
 
@@ -49,7 +43,6 @@ public class Elevator extends SubsystemBase {
     }
 
     public void setGoal(double goalHeight) {
-        //elevatorMotorPID.reset(getHeight());
         target = goalHeight;
     }
 

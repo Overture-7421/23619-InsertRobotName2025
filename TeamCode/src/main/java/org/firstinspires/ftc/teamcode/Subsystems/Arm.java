@@ -20,8 +20,8 @@ public class Arm extends SubsystemBase {
 
     public static final double COUNTS_PER_REV = 8192;
     private static final double OFFSET = 47;
-    public static double target = 0;
-    public static double ff = 0.175;
+    private double target = -47;
+    private static final double ff = 0.175;
     //public static double p = 0.0;
 
     public Arm(HardwareMap hardwareMap) {
@@ -53,7 +53,7 @@ public class Arm extends SubsystemBase {
     public void periodic() {
         double motorOutput = armPID.calculate(getPosition(), target);
         motor.setPower(motorOutput + armFeedForward(getPosition()));
-
+        telemetry.addData("Arm Output", motorOutput);
         telemetry.addData("Arm Position", getPosition());
         telemetry.addData("Arm Target", target);
 
