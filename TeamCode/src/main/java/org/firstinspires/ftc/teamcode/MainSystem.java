@@ -1,13 +1,14 @@
 package org.firstinspires.ftc.teamcode;
+
 import org.firstinspires.ftc.teamcode.Commands.LowBasket;
 import org.firstinspires.ftc.teamcode.Commands.MoveArm;
 import org.firstinspires.ftc.teamcode.Subsystems.Chassis;
+import org.firstinspires.ftc.teamcode.Subsystems.Constants;
 import org.firstinspires.ftc.teamcode.Subsystems.Intake;
 import org.firstinspires.ftc.teamcode.Commands.MoveIntake;
 import org.firstinspires.ftc.teamcode.Subsystems.Arm;
 import org.firstinspires.ftc.teamcode.Subsystems.Elevator;
 import org.firstinspires.ftc.teamcode.Commands.ElevatorPositions;
-
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import com.arcrobotics.ftclib.command.Command;
@@ -19,18 +20,21 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.command.button.Button;
+import org.firstinspires.ftc.teamcode.Commands.MoveArm;
+import org.firstinspires.ftc.teamcode.Commands.MoveIntake;
+import com.acmerobotics.dashboard.telemetry.MultipleTelemetry;
 import org.firstinspires.ftc.teamcode.Commands.Drive;
+
 
 
 @TeleOp
 public class MainSystem extends LinearOpMode {
     @Override
         public void runOpMode(){
-
-        CommandScheduler.getInstance().cancelAll();
-        CommandScheduler.getInstance().reset();
-        telemetry = new MultipleTelemetry( FtcDashboard.getInstance().getTelemetry());
-
+          
+            CommandScheduler.getInstance().cancelAll();
+            CommandScheduler.getInstance().reset();
+            telemetry = new MultipleTelemetry(FtcDashboard.getInstance().getTelemetry());
 
             Chassis chassis = new Chassis(hardwareMap); //Here you can add every element of the robot
             Intake intake = new Intake(hardwareMap);
@@ -71,9 +75,12 @@ public class MainSystem extends LinearOpMode {
         operatorButtonDPAD.whenPressed(new LowBasket(elevator arm));*/
 
 
-        /*Button operatorButtonA= operator.getGamepadButton(GamepadKeys.Button.A);
-        operatorButtonA.whenPressed(new ElevatorPositions(elevator,0.0));*/
+        Button operatorButtonX= operator.getGamepadButton(GamepadKeys.Button.X);
+        operatorButtonX.whenPressed(new ElevatorPositions(elevator,0));
 
+
+        Button operatorButtonA=operator.getGamepadButton(GamepadKeys.Button.A);
+        operatorButtonA.whenPressed(new BasketPos(arm, elevator, Constants.Arm.ARMHIGHCHAMBER, Constants.Elevator.ELEVATORHIGHCHAMBER));
 
 
         waitForStart();

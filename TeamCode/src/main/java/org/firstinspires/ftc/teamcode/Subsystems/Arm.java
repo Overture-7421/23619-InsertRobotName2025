@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.Subsystems;
 
+
 import com.acmerobotics.dashboard.FtcDashboard;
 import com.acmerobotics.dashboard.config.Config;
 import com.arcrobotics.ftclib.command.SubsystemBase;
@@ -39,6 +40,7 @@ public class Arm extends SubsystemBase {
 
     private double armFeedForward(double angle){
         return ((Math.cos(Math.toRadians(angle))) * ff);
+
     }
 
     public double getPosition() {
@@ -46,8 +48,10 @@ public class Arm extends SubsystemBase {
         return ((currentTicks / COUNTS_PER_REV) * 360 - OFFSET);
     }
 
+
     public void setTarget(double targetPos) {
         target = targetPos;
+
     }
     @Override
     public void periodic() {
@@ -56,6 +60,7 @@ public class Arm extends SubsystemBase {
         telemetry.addData("Arm Output", motorOutput);
         telemetry.addData("Arm Position", getPosition());
         telemetry.addData("Arm Target", target);
+
 
     }
 }
